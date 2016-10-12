@@ -16,6 +16,8 @@
                             <div class="post-desc">
                                 Category : {{ cv.category }}
                                 <br/>
+                                Lieu : {{ cv.lieu|default_if_none:'' }}
+                                <br/>
                                 <a target="_blank" href="{{ cv.cv.url }}">Download CV</a>
                             </div>
                         </div>

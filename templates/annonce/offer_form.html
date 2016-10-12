@@ -21,10 +21,13 @@
             {% endfor %}
             <div class="form-group">
                 <label class="control-label"></label>
-                <div class="text-left">
-                    <button type="submit" class="btn btn-inverse btn-lg btn-block">
+                <div class="text-center">
+                    <button type="submit" class="btn btn-inverse btn-lg">
                         Save
                     </button>
+                    <a href="{% url 'my_post_list' %}" type="reset" onclick="" class="btn btn-danger btn-lg">
+                        Cancel
+                    </a>
                 </div>
             </div>
         </form>
