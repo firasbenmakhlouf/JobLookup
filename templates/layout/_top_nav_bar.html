@@ -26,7 +26,6 @@
                 {% else %}
                     <li><a href="/">HOME</a></li>
                 {% endif %}
-
                 {% if user.is_authenticated %}
                     {% if user.is_employer %}
                         <li><a href="{% url 'archived_post_list' %}">ARCHIVED POSTS</a></li>
@@ -35,6 +34,23 @@
                     <li><a href="{% url 'logout' %}">LOGOUT</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">LOGIN</a></li>
+                    <li class="dropdown">
+                        <a href="javascript:;" data-toggle="dropdown" aria-expanded="true">REGISTER <b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'register' 'employer' %}"><i class="fa fa-upload"></i>
+                                    Find jobs | Submit your CV
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'register' 'job_seekers' %}">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                    Find Employers | Submit your Offer
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 {% endif %}
             </ul>
         </div>
