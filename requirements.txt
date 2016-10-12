@@ -1,0 +1,6 @@
+django
+mechanize
+beautifulsoup4
+lxml
+django-localflavor
+pytz

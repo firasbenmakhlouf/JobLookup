@@ -1,0 +1,51 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n customfilters %}
+{% block blockcontent %}
+    <!-- begin col-3 -->
+    <div class="col-md-3">
+        <!-- begin section-container -->
+        <div class="section-container">
+            <h4 class="section-title"><span>Settings</span></h4>
+            <ul class="sidebar-recent-post">
+                <li>
+                    <div class="info">
+                        <h4 class="title">
+                            <a href="{% url 'profile' %}">Update Profile</a>
+                        </h4>
+                    </div>
+                </li>
+                {% if user.is_employer %}
+                    <li>
+                        <div class="info">
+                            <h4 class="title">
+                                <a href="{% url 'add_cv' %}">Add your CV</a>
+                            </h4>
+                        </div>
+                    </li>
+                {% elif user.is_job_seekers %}
+                    <li>
+                        <div class="info">
+                            <h4 class="title">
+                                <a href="{% url 'post_add' %}">Add Post</a>
+                            </h4>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info">
+                            <h4 class="title">
+                                <a href="{% url 'my_post_list' %}">My Post</a>
+                            </h4>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- end section-container -->
+    </div>
+    <!-- end col-3 -->
+    <!-- begin col-9 -->
+    <div class="col-md-9">
+        {% block contentprofile %}{% endblock %}
+    </div>
+    <!-- end col-9 -->
+{% endblock %}

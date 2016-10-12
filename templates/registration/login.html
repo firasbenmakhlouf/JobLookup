@@ -1,0 +1,56 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n customfilters %}
+{% block blockcontent %}
+    <!-- begin #content -->
+    <div id="content" class="content">
+        <!-- begin container -->
+        <div class="container">
+            <!-- begin row -->
+            <div class="row">
+                <!-- begin col-9 -->
+                <div class="col-md-12">
+                    <!-- begin section-container -->
+                    <div class="section-container">
+                        <h4 class="section-title m-b-20"><span>Login</span></h4>
+                        <!-- begin row -->
+                        <div class="row row-space-30 f-s-12 text-inverse">
+                            <!-- begin col-8 -->
+                            <div class="col-md-8 col-md-offset-2">
+                                <form class="form-horizontal" action="{% url 'login' %}{% if next %}?next={{next}}{% endif %}" method="post">
+                                    {% csrf_token %}
+                                    {% if form.non_field_errors %}
+                                        <p>{{ form.non_field_errors }}</p>
+                                    {% endif %}
+                                    {% for field in form %}
+                                        <div class="form-group {% if form.non_field_errors %} has-error {% endif %}">
+                                            <label class="control-label">
+                                                {{ field.label }}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ field|add_css:"form-control,off" }}
+                                        </div>
+                                    {% endfor %}
+                                    <div class="form-group">
+                                        <label class="control-label"></label>
+                                        <div class="text-left">
+                                            <button type="submit" class="btn btn-inverse btn-lg btn-block">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- end col-8 -->
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end section-container -->
+                </div>
+                <!-- end col-9 -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end #content -->
+{% endblock %}

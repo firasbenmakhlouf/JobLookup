@@ -1,0 +1,68 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n %}
+{% block content %}
+    <!-- begin post-list -->
+    <ul class="post-list">
+        {% for offer in offers_list %}
+            <li>
+                <!-- begin post-left-info -->
+                <div class="post-left-info">
+                    <div class="post-date">
+                        <span class="day">{{ offer.created_at|date:"d" }}</span>
+                        <span class="month">{{ offer.created_at|date:"M" }}</span>
+                    </div>
+                </div>
+                <!-- end post-left-info -->
+                <!-- begin post-content -->
+                <div class="post-content">
+                    <!-- begin post-image -->
+{#                    <div class="post-image">#}
+{#                        <a href="{% url 'post_details' offer.pk offer.slug %}">#}
+{#                            <img src="{% static 'assets/img/post4.jpg' %}" alt=""/>#}
+{#                        </a>#}
+{#                    </div>#}
+                    <!-- end post-image -->
+                    <!-- begin post-info -->
+                    <div class="post-info">
+                        <h4 class="post-title">
+                            <a href="{% url 'post_details' offer.pk offer.slug %}">{{ offer.job_title }}</a>
+                        </h4>
+                        <div class="post-by">
+                            Posted By <a href="#">{{ offer.company_name }}</a>
+                            <span class="divider">|</span>
+                            {% for sector in offer.sector_activity.all %}
+                                <a href="#">{{ sector }}</a> {% if not forloop.last %},{% endif %}
+                                {% if forloop.last %}<span class="divider">|</span>{% endif %}
+                            {% endfor %}
+                            Created at : {{ offer.created_at|date:"d F Y" }} | Lieu: {{ offer.lieu }}
+                        </div>
+                        <div class="post-desc">
+                            {{ offer.description|truncatechars:350 }}
+                        </div>
+                    </div>
+                    <!-- end post-info -->
+                    <!-- begin read-btn-container -->
+                    <div class="read-btn-container">
+                        <a href="{% url 'post_details' offer.pk offer.slug %}" class="read-btn">Read More
+                            <i class="fa fa-angle-double-right"></i>
+                        </a>
+                    </div>
+                    <!-- end read-btn-container -->
+                </div>
+                <!-- end post-content -->
+                <hr/>
+            </li>
+        {% empty %}
+            <li>Not Found. Please try again</li>
+        {% endfor %}
+    </ul>
+    <!-- end post-list -->
+
+    <div class="section-container">
+        <!-- begin pagination -->
+        <div class="pagination-container text-center">
+            {% include 'layout/_paginator.html' %}
+        </div>
+        <!-- end pagination -->
+    </div>
+{% endblock %}

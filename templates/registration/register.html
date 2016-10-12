@@ -1,0 +1,67 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n customfilters %}
+{% block blockcontent %}
+    <style>
+        .custom:before {
+            background: {% if position == 'employer' %}#00acac{% else %}#49b6d6{% endif %};
+        }
+    </style>
+    <!-- begin #content -->
+    <div id="content" class="content">
+        <!-- begin container -->
+        <div class="container">
+            <!-- begin row -->
+            <div class="row row-space-30">
+                <!-- begin col-9 -->
+                <div class="col-md-12">
+                    <!-- begin section-container -->
+                    <div class="section-container">
+                        <br/><br/>
+                        <h4 class="section-title custom m-b-20">
+                            <span style="color: {% if position == 'employer' %}#00acac{% else %}#49b6d6{% endif %};">
+                                {{ position|cut:"_" }} Registration</span>
+                        </h4>
+                        <!-- begin row -->
+                        <div class="row row-space-30 f-s-12 text-inverse">
+                            <!-- begin col-8 -->
+                            <div class="col-md-8 col-md-offset-2">
+                                {% if form.non_field_errors %}
+                                    <p>{{ form.non_field_errors }}</p>
+                                {% endif %}
+                                <form class="form-horizontal" method="post" action="">
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                        {% if field.label != 'Position' %}
+                                            <div class="form-group {% if field.errors %} has-error {% endif %}">
+                                                <label class="control-label">{{ field.label }}
+                                                    <span class="text-danger">* {% if field.errors %}
+                                                        {{ field.errors.as_text }} {% endif %}</span>
+                                                </label>
+                                                {{ field|add_css:"form-control,off" }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="form-group">
+                                        <label class="control-label"></label>
+                                        <div class="text-left">
+                                            <button type="submit" class="btn btn-inverse btn-lg btn-block">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- end col-8 -->
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end section-container -->
+                </div>
+                <!-- end col-9 -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end #content -->
+{% endblock %}

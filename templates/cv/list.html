@@ -1,0 +1,39 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n %}
+{% block content %}
+    <!-- begin post-list -->
+    <ul class="post-list">
+        {% for cv in cv_list %}
+            {% if cv.cv %}
+                <li>
+                    <!-- begin post-content -->
+                    <div class="post-content">
+                        <!-- begin post-info -->
+                        <div class="post-info">
+                            <h4 class="post-title">
+                                {{ cv.get_full_name }}
+                            </h4>
+                            <div class="post-desc">
+                                Category : {{ cv.category }}
+                                <br/>
+                                <a target="_blank" href="{{ cv.cv.url }}">Download CV</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end post-content -->
+                    <hr/>
+                </li>
+            {% endif %}
+        {% empty %}
+            <li>Not Found. Please try again</li>
+        {% endfor %}
+    </ul>
+    <!-- end post-list -->
+    <div class="section-container">
+        <!-- begin pagination -->
+        <div class="pagination-container text-center">
+            {% include 'layout/_paginator.html' %}
+        </div>
+        <!-- end pagination -->
+    </div>
+{% endblock %}

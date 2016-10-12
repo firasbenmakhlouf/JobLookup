@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+{% load staticfiles i18n %}
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Job Lookup</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+
+    <!-- ================== BEGIN BASE CSS STYLE ================== -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
+    <link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/animate.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/style.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/style-responsive.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/theme/default.css' %}" id="theme" rel="stylesheet"/>
+    <!-- ================== END BASE CSS STYLE ================== -->
+
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="{% static 'assets/plugins/pace/pace.min.js' %}"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- ================== END BASE JS ================== -->
+</head>
+<body>
+{% include 'layout/_top_nav_bar.html' %}
+
+<!-- begin #content -->
+<div id="content" class="content">
+    <!-- begin container -->
+    <div class="container">
+        <!-- begin row -->
+        <div class="row row-space-30">
+            {% block blockcontent %}
+                <!-- begin col-9 -->
+                <div class="col-md-9">
+                    {% block content %} {% endblock %}
+                </div>
+                <!-- end col-9 -->
+                <!-- begin col-3 -->
+                <div class="col-md-3">
+                    {% include 'layout/_right_sidebar.html' %}
+                </div>
+                <!-- end col-3 -->
+            {% endblock %}
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+<!-- end #content -->
+
+<!-- begin #footer-copyright -->
+<div id="footer-copyright" class="footer-copyright">
+    <!-- begin container -->
+    <div class="container">
+        <span class="copyright">&copy; 2016 Job Lookup All Right Reserved</span>
+        <ul class="social-media-list">
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa fa-rss"></i></a></li>
+        </ul>
+    </div>
+    <!-- end container -->
+</div>
+<!-- end #footer-copyright -->
+
+<!-- ================== BEGIN BASE JS ================== -->
+<script src="{% static 'assets/plugins/jquery/jquery-1.9.1.min.js' %}"></script>
+<script src="{% static 'assets/plugins/jquery/jquery-migrate-1.1.0.min.js' %}"></script>
+<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--[if lt IE 9]>
+		<script src="assets/crossbrowserjs/html5shiv.js"></script>
+		<script src="assets/crossbrowserjs/respond.min.js"></script>
+		<script src="assets/crossbrowserjs/excanvas.min.js"></script>
+	<![endif]-->
+<script src="{% static 'assets/plugins/jquery-cookie/jquery.cookie.js' %}"></script>
+<script src="{% static 'assets/js/apps.min.js' %}"></script>
+<!-- ================== END BASE JS ================== -->
+
+<script>
+    $(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

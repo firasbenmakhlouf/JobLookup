@@ -1,0 +1,178 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n customfilters %}
+{% block blockcontent %}
+    <!-- begin #page-title -->
+    {#    <div id="page-title" class="has-bg">#}
+    {#        <div class="container">#}
+    {##}
+    {#        </div>#}
+    {#    </div>#}
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="3"></li>
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox" style="height: 320px">
+            <div class="item active">
+                <img src="{% static 'assets/img/job/pic-1.jpg' %}" alt="Chania">
+            </div>
+
+            <div class="item">
+                <img src="{% static 'assets/img/job/pic-2.jpg' %}" alt="Chania">
+            </div>
+
+            <div class="item">
+                <img src="{% static 'assets/img/job/pic-3.jpg' %}" alt="Flower">
+            </div>
+
+            <div class="item">
+                <img src="{% static 'assets/img/job/pic-4.jpg' %}" alt="Flower">
+            </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" style="background-image: inherit" href="#myCarousel" role="button"
+           data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <!-- end #page-title -->
+    <!-- begin #content -->
+    <div id="content" class="content">
+        <!-- begin container -->
+        <div class="container">
+            <!-- begin row -->
+            <div class="row row-space-30">
+                <!-- begin col-9 -->
+                <div class="col-md-6">
+                    <!-- begin section-container -->
+                    <a href="{% url 'register' 'employer' %}" class="btn btn-success btn-lg" style="width: 100%">
+                        <i class="fa fa-upload"></i>
+                        Find jobs | Submit your CV
+                    </a>
+                    <!-- end section-container -->
+                </div>
+                <div class="col-md-6">
+                    <!-- begin section-container -->
+                    <a href="{% url 'register' 'job_seekers' %}" class="btn btn-info btn-lg" style="width: 100%">
+                        <i class="fa fa-file-pdf-o"></i>
+                        Find Employers | Submit your Offer
+                    </a>
+                    <!-- end section-container -->
+                </div>
+                <!-- end col-9 -->
+            </div>
+            <!-- end row -->
+            <br/>
+            <!-- begin row -->
+            <div class="row row-space-30">
+                <div class="col-md-12">
+                    <div id="posts_per_region" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_sector_per_region" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_sector" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_date" style="width: 900px; height: 500px;"></div>
+                </div>
+            </div>
+            <!-- end row -->
+            <script type="text/javascript">
+                google.charts.load('current', {'packages': ['bar', 'corechart', 'line']});
+                google.charts.setOnLoadCallback(draw_posts_per_region);
+                google.charts.setOnLoadCallback(posts_per_sector_per_region);
+                google.charts.setOnLoadCallback(draw_posts_per_date);
+                google.charts.setOnLoadCallback(draw_posts_per_sector_pie);
+                function draw_posts_per_region() {
+                    var data = new google.visualization.arrayToDataTable({{ posts_per_region|safe }});
+                    var options = {
+                        width: 900,
+                        legend: {position: 'none'},
+                        chart: {
+                            title: 'Posts Per Region'
+                        },
+                        vAxis: {
+                            format: 'decimal'
+                        },
+                        series: {
+                            0: {axis: 'distance'}, // Bind series 0 to an axis named 'distance'.
+                            1: {axis: 'brightness'} // Bind series 1 to an axis named 'brightness'.
+                        }
+                    };
+
+                    var chart = new google.charts.Bar(document.getElementById('posts_per_region'));
+
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                }
+
+                function draw_posts_per_date() {
+                    var data = new google.visualization.arrayToDataTable({{ posts_per_date|safe }});
+                    var options = {
+                        width: 900,
+                        legend: {position: 'none'},
+                        chart: {
+                            title: 'Posts Per Month'
+                        },
+                        vAxis: {
+                            format: 'decimal'
+                        },
+                        series: {
+                            0: {axis: 'distance'}, // Bind series 0 to an axis named 'distance'.
+                            1: {axis: 'brightness'} // Bind series 1 to an axis named 'brightness'.
+                        }
+                    };
+
+                    var chart = new google.charts.Bar(document.getElementById('posts_per_date'));
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                }
+
+                function draw_posts_per_sector_pie() {
+
+                    var data = google.visualization.arrayToDataTable({{ posts_per_sector|safe }});
+
+                    var options = {
+                        title: 'Posts Per Sector',
+                        is3D: true,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('posts_per_sector'));
+
+                    chart.draw(data, options);
+                }
+
+                function posts_per_sector_per_region() {
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Region');
+                    {% for sector in posts_per_sector_per_region_sectors %}
+                        data.addColumn('number', "{{ sector.name|safe }}");
+                    {% endfor %}
+                    {% for row in posts_per_sector_per_region_data %}
+                        data.addRow({{ row|safe }});
+                    {% endfor %}
+
+                    var options = {
+                        chart: {
+                            title: 'Posts Per Sector Per Region',
+                        },
+                        width: 900,
+                        height: 500,
+
+                    };
+
+                    var chart = new google.charts.Line(document.getElementById('posts_per_sector_per_region'));
+
+                    chart.draw(data, options);
+                }
+            </script>
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end #content -->
+{% endblock %}

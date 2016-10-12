@@ -1,0 +1,39 @@
+{% extends 'layout/_layout.html' %}
+{% load staticfiles i18n %}
+{% block content %}
+    <!-- begin post-detail -->
+    <div class="post-detail section-container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active">{{ object.job_title }}</li>
+        </ul>
+        <h4 class="post-title">
+            <a href="{% url 'post_details' object.pk object.slug %}">{{ object.job_title }}</a>
+        </h4>
+        <div class="post-by">
+            Posted By <a href="#">{{ object.company_name }}</a>
+            <span class="divider">|</span> Created at : {{ object.created_at|date:"d F Y" }}
+            {% for sector in object.sector_activity.all %}
+                {% if forloop.first %}<span class="divider">|</span>{% endif %}
+                <a href="#">{{ sector }}</a> {% if not forloop.last %},{% endif %}
+                {% if forloop.last %}<span class="divider">|</span>{% endif %}
+            {% empty %}
+                <span class="divider">|</span>
+            {% endfor %}
+            Expired at : {{ object.expired_at|date:"d F Y" }}  | Lieu: {{ offer.lieu }}
+        </div>
+        <!-- begin post-image -->
+{#        <div class="post-image">#}
+{#            <img src="{% static 'assets/img/post1.jpg' %}" alt=""/>#}
+{#        </div>#}
+        <!-- end post-image -->
+        <!-- begin post-desc -->
+        <div class="post-desc">
+            <p>
+                {{ object.description }}
+            </p>
+        </div>
+        <!-- end post-desc -->
+    </div>
+    <!-- end post-detail -->
+{% endblock %}

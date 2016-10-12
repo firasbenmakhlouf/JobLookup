@@ -1,0 +1,42 @@
+{% extends 'profile/_profile.html' %}
+{% load staticfiles i18n customfilters %}
+{% block contentprofile %}
+    <!-- begin col-8 -->
+    <div class="col-md-8 col-md-offset-2">
+        {% if form.non_field_errors %}
+            <p>{{ form.non_field_errors }}</p>
+        {% endif %}
+        <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group {% if field.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ field.label }}
+                        <span class="text-danger">* {% if field.errors %}
+                            {{ field.errors.as_text }} {% endif %}</span>
+                    </label>
+                    {{ field|add_css:"form-control,off" }}
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <label class="control-label"></label>
+                <div class="text-left">
+                    <button type="submit" class="btn btn-inverse btn-lg btn-block">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </div>
+    <!-- end col-8 -->
+{% endblock %}

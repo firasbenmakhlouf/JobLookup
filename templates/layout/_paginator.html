@@ -1,0 +1,49 @@
+{% if is_paginated %}
+    <ul class="pagination m-t-0 m-b-0">
+        {% if query_string %}
+            {% if page_obj.has_previous %}
+                <li><a href="?page=1&{{ query_string }}">First</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}&{{ query_string }}">Prev</a></li>
+                {% if previous_slide_start %}
+                    <li><a href="?page={{ previous_slide_start }}&{{ query_string }}">..</a></li>
+                {% endif %}
+            {% endif %}
+            {% for page in paginator.page_range %}
+                <li {% if page == page_obj.number %}class="active"{% endif %}>
+                    <a href="?page={{ page }}&{{ query_string }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                {% if next_slide_start %}
+                    <li><a href="?page={{ next_slide_start }}&{{ query_string }}">..</a></li>
+                {% endif %}
+                <li><a href="?page={{ page_obj.next_page_number }}&{{ query_string }}">Next</a></li>
+                <li><a href="?page={{ page_obj.paginator.num_pages }}&{{ query_string }}">Last</a></li>
+            {% endif %}
+        {% else %}
+            {% if page_obj.has_previous %}
+                <li><a href="?page=1">First</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}">Prev</a></li>
+                {% if previous_slide_start %}
+                    <li><a href="?page={{ previous_slide_start }}">..</a></li>
+                {% endif %}
+            {% endif %}
+
+            {% for page in paginator.page_range %}
+                <li {% if page == page_obj.number %}class="active"{% endif %}>
+                    <a href="?page={{ page }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                {% if next_slide_start %}
+                    <li><a href="?page={{ next_slide_start }}">..</a></li>
+                {% endif %}
+                <li><a href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li><a href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
+    <p>Page {{ page_obj.number }} of {{ paginator.num_pages }}</p>
+{% endif %}
