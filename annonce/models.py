@@ -75,6 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                       help_text=_('Designates whether the user is a is employer or not'))
     is_job_seekers = models.BooleanField(_('is_employer'), default=False,
                                          help_text=_('Designates whether the user is a is employer or not'))
+    lieu = models.CharField(max_length=255, blank=True, null=True, choices=GOVERNORATE_CHOICES)
     cv = models.FileField(null=True, blank=True)
 
     objects = UserManager()

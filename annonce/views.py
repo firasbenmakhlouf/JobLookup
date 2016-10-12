@@ -33,7 +33,7 @@ def index(request):
         count = 0
         for obj in qs_posts_per_region:
             if obj['lieu']:
-                if state.replace(' ', '').lower() in obj['lieu'].replace(' ', '').lower():# TODO
+                if state.replace(' ', '').lower() in obj['lieu'].replace(' ', '').lower():  # TODO
                     count += obj['count']
         posts_per_region.append([state.title(), count])
     # Per Sector -------------------------
@@ -126,6 +126,9 @@ def profile(request):
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            if request.user.is_employer:
+                return redirect(reverse('recent_post_list'))
+            return redirect(reverse('recent_cv_list'))
     fields = (form[field] for field in UserUpdateForm.Meta.fields)
     return render(request, 'profile/edit.html', context={'form': fields})
 
@@ -167,8 +170,17 @@ class PostDeleteView(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class PostListView(ListView):
     model = Offer
-    paginate_by = 40
+    paginate_by = 25
     context_object_name = 'offers_list'
+
+    def get_paginate_value(self):
+        return self.request.GET.get('paginate_by', self.paginate_by)
+
+    def get_paginate_by(self, queryset):
+        """
+        Paginate by specified value in querystring, or use default class property value.
+        """
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
     def get_queryset(self):
         qs = super(PostListView, self).get_queryset()
@@ -179,7 +191,7 @@ class PostListView(ListView):
 @method_decorator(login_required, name='dispatch')
 class RecentOffers(UserPassesTestMixin, ListView):
     model = Offer
-    paginate_by = 40
+    paginate_by = 25
     template_name = 'post/list.html'
     context_object_name = 'offers_list'
     login_url = 'recent_cv_list'
@@ -187,6 +199,15 @@ class RecentOffers(UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.is_employer
+
+    def get_paginate_value(self):
+        return self.request.GET.get('paginate_by', self.paginate_by)
+
+    def get_paginate_by(self, queryset):
+        """
+        Paginate by specified value in querystring, or use default class property value.
+        """
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
     def get_queryset(self):
         qs = super(RecentOffers, self).get_queryset()
@@ -196,7 +217,7 @@ class RecentOffers(UserPassesTestMixin, ListView):
             qs = qs.filter(Q(sector_activity__name=self.request.user.category.name))
         search = self.request.GET.get('search', '')
         category = self.request.GET.get('category', '')
-        region = self.request.GET.get('region', '')
+        region = self.request.GET.get('region', self.request.user.lieu)
         if region:
             qs = qs.filter(Q(lieu__icontains=region) | Q(state=region))
         if search:
@@ -215,7 +236,8 @@ class RecentOffers(UserPassesTestMixin, ListView):
         kwargs['recent_offers'] = qs[slice: slice + 6]
         if self.request.user.category.name == 'Tous secteurs':
             for category in TanitJobsCategory.objects.all():
-                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by('-created_at')
+                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by(
+                    '-created_at')
                 count = qs.count()
                 if count:
                     categories[category.name] = count
@@ -228,7 +250,7 @@ class RecentOffers(UserPassesTestMixin, ListView):
 @method_decorator(login_required, name='dispatch')
 class RecentCV(ListView):
     model = User
-    paginate_by = 40
+    paginate_by = 25
     template_name = 'cv/list.html'
     context_object_name = 'cv_list'
     login_url = 'recent_post_list'
@@ -236,6 +258,15 @@ class RecentCV(ListView):
 
     def test_func(self):
         return self.request.user.is_job_seekers
+
+    def get_paginate_value(self):
+        return self.request.GET.get('paginate_by', self.paginate_by)
+
+    def get_paginate_by(self, queryset):
+        """
+        Paginate by specified value in querystring, or use default class property value.
+        """
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
     def get_queryset(self):
         qs = super(RecentCV, self).get_queryset()
@@ -274,7 +305,7 @@ class RecentCV(ListView):
 @method_decorator(login_required, name='dispatch')
 class ArchivedOffers(UserPassesTestMixin, ListView):
     model = Offer
-    paginate_by = 40
+    paginate_by = 25
     template_name = 'post/list.html'
     context_object_name = 'offers_list'
     login_url = 'profile'
@@ -282,6 +313,15 @@ class ArchivedOffers(UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.is_employer
+
+    def get_paginate_value(self):
+        return self.request.GET.get('paginate_by', self.paginate_by)
+
+    def get_paginate_by(self, queryset):
+        """
+        Paginate by specified value in querystring, or use default class property value.
+        """
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
     def get_queryset(self):
         qs = super(ArchivedOffers, self).get_queryset()
@@ -291,7 +331,7 @@ class ArchivedOffers(UserPassesTestMixin, ListView):
             qs = qs.filter(Q(sector_activity__name=self.request.user.category.name))
         search = self.request.GET.get('search', '')
         category = self.request.GET.get('category', '')
-        region = self.request.GET.get('region', '')
+        region = self.request.GET.get('region', self.request.user.lieu)
         if region:
             qs = qs.filter(Q(lieu__icontains=region) | Q(state=region))
         if search:
@@ -311,7 +351,8 @@ class ArchivedOffers(UserPassesTestMixin, ListView):
         kwargs['archived'] = True
         if self.request.user.category.name == 'Tous secteurs':
             for category in TanitJobsCategory.objects.all():
-                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by('-created_at')
+                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by(
+                    '-created_at')
                 count = qs.count()
                 if count:
                     categories[category.name] = count

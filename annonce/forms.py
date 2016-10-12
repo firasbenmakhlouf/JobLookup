@@ -18,13 +18,13 @@ class UserForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2', 'category')
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2', 'category', 'lieu')
 
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'category')
+        fields = ('email', 'first_name', 'last_name', 'category', 'lieu')
 
 
 class OfferForm(forms.ModelForm):

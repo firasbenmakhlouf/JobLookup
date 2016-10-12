@@ -1,58 +1,106 @@
 <!-- begin section-container -->
-<form class="section-container" method="get" role="form" action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
-    <tr>
-        <th><label>Search By:</label></th>
-    </tr>
-    <br/>
-    <label>Name:</label>
-    <div class="input-group sidebar-search">
-        <input type="text" name="search" class="form-control" placeholder="Search Our Offers..."/>
-        <span class="input-group-btn">
-            <button class="btn btn-inverse" type="submit">
-                <i class="fa fa-search"></i>
-            </button>
-        </span>
-    </div>
-    <label>Region:</label>
-    <div class="input-group sidebar-search">
-        <select id="id_region" class="form-control" name="region">
-            <option value="">--------</option>
-            <option value="ariana">Ariana</option>
-            <option value="beja">Beja</option>
-            <option value="ben arous">Ben Arous</option>
-            <option value="bizert">Bizert</option>
-            <option value="gabes">Gabes</option>
-            <option value="gafsa">Gafsa</option>
-            <option value="jendouba">Jendouba</option>
-            <option value="kairouan">Kairouan</option>
-            <option value="kasserine">Kasserine</option>
-            <option value="kebili">Kebili</option>
-            <option value="kef">Kef</option>
-            <option value="mahdia">Mahdia</option>
-            <option value="manouba">Manouba</option>
-            <option value="medenine">Medenine</option>
-            <option value="monastir">Monastir</option>
-            <option value="nabeul">Nabeul</option>
-            <option value="sfax">Sfax</option>
-            <option value="sidi bouzid">Sidi Bouzid</option>
-            <option value="siliana">Siliana</option>
-            <option value="sousse">Sousse</option>
-            <option value="tataouine">Tataouine</option>
-            <option value="tozeur">Tozeur</option>
-            <option value="tunis">Tunis</option>
-            <option value="zaghouan">Zaghouan</option>
+<div class="section-container">
+    <h4 class="section-title"><span>Actions</span></h4>
+    <ul class="sidebar-recent-post">
+        <li>
+            <div class="info">
+                <h4 class="title">
+                    <a href="{% url 'profile' %}">Update Profile</a>
+                </h4>
+            </div>
+        </li>
+        {% if user.is_employer %}
+            <li>
+                <div class="info">
+                    <h4 class="title">
+                        <a href="{% url 'add_cv' %}">Add your CV</a>
+                    </h4>
+                </div>
+            </li>
+        {% elif user.is_job_seekers %}
+            <li>
+                <div class="info">
+                    <h4 class="title">
+                        <a href="{% url 'post_add' %}">Add Post</a>
+                    </h4>
+                </div>
+            </li>
+            <li>
+                <div class="info">
+                    <h4 class="title">
+                        <a href="{% url 'my_post_list' %}">My Post</a>
+                    </h4>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+<!-- end section-container -->
+<!-- begin section-container -->
+<div class="section-container">
+    <h4 class="section-title"><span>Filters</span></h4>
+    <form action="" method="get">
+        <label>Number of posts:</label>
+        <select onchange="this.form.submit()" class="form-control" name="paginate_by">
+            <option {% if view.get_paginate_value == '25' %}selected="selected"{% endif %}>25</option>
+            <option {% if view.get_paginate_value == '50' %}selected="selected"{% endif %}>50</option>
+            <option {% if view.get_paginate_value == '75' %}selected="selected"{% endif %}>75</option>
+            <option {% if view.get_paginate_value == '100' %}selected="selected"{% endif %}>100</option>
         </select>
-        <span class="input-group-btn">
+    </form>
+    <form method="get" role="form"
+          action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
+        <label>Search By Name:</label>
+        <div class="input-group sidebar-search">
+            <input type="text" name="search" class="form-control" placeholder="Search Our Offers..."/>
+            <span class="input-group-btn">
             <button class="btn btn-inverse" type="submit">
                 <i class="fa fa-search"></i>
             </button>
         </span>
-    </div>
-</form>
+        </div>
+        <label>Search By Region:</label>
+        <div class="input-group sidebar-search">
+            <select id="id_region" class="form-control" name="region">
+                <option value="">--------</option>
+                <option value="ariana">Ariana</option>
+                <option value="beja">Beja</option>
+                <option value="ben arous">Ben Arous</option>
+                <option value="bizert">Bizert</option>
+                <option value="gabes">Gabes</option>
+                <option value="gafsa">Gafsa</option>
+                <option value="jendouba">Jendouba</option>
+                <option value="kairouan">Kairouan</option>
+                <option value="kasserine">Kasserine</option>
+                <option value="kebili">Kebili</option>
+                <option value="kef">Kef</option>
+                <option value="mahdia">Mahdia</option>
+                <option value="manouba">Manouba</option>
+                <option value="medenine">Medenine</option>
+                <option value="monastir">Monastir</option>
+                <option value="nabeul">Nabeul</option>
+                <option value="sfax">Sfax</option>
+                <option value="sidi bouzid">Sidi Bouzid</option>
+                <option value="siliana">Siliana</option>
+                <option value="sousse">Sousse</option>
+                <option value="tataouine">Tataouine</option>
+                <option value="tozeur">Tozeur</option>
+                <option value="tunis">Tunis</option>
+                <option value="zaghouan">Zaghouan</option>
+            </select>
+            <span class="input-group-btn">
+            <button class="btn btn-inverse" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+        </div>
+    </form>
+</div>
 <!-- end section-container -->
 <!-- begin section-container -->
 {% if categories %}
-    <form class="section-container" method="get" role="form" action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
+    <form class="section-container" method="get" role="form"
+          action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
         <h4 class="section-title"><span>Categories</span></h4>
         <ul class="sidebar-list">
             {% for category in categories %}

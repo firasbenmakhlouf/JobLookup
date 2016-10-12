@@ -20,7 +20,7 @@
             {% empty %}
                 <span class="divider">|</span>
             {% endfor %}
-            Expired at : {{ object.expired_at|date:"d F Y" }}  | Lieu: {{ offer.lieu }}
+            Expired at : {{ object.expired_at|date:"d F Y" }}  | Lieu: {{ offer.lieu|default_if_none:offer.state }}
         </div>
         <!-- begin post-image -->
 {#        <div class="post-image">#}
