@@ -134,3 +134,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR + '/media/'
 
 AUTH_USER_MODEL = 'annonce.User'
+
+try:
+    from local import *
+except ImportError:
+    pass
