@@ -101,3 +101,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         Returns the short name for the user.
         """
         return self.first_name
+
+
+class ApplyOffer(models.Model):
+    offer = models.ForeignKey(Offer)
+    user = models.ForeignKey(User)
+    date_submit = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['offer', 'user']

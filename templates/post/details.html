@@ -1,6 +1,16 @@
 {% extends 'layout/_layout.html' %}
 {% load staticfiles i18n %}
 {% block content %}
+    {% if messages %}
+        <ul id="messages">
+            {% for message in messages %}
+                <li {% if message.tags == 'error' %} class="bg-danger"
+                                                     {% else %}class="bg-{{ message.tags }}"{% endif %}>
+                    {{ message|safe }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <!-- begin post-detail -->
     <div class="post-detail section-container">
         <ul class="breadcrumb">
@@ -20,12 +30,12 @@
             {% empty %}
                 <span class="divider">|</span>
             {% endfor %}
-            Expired at : {{ object.expired_at|date:"d F Y" }}  | Lieu: {{ offer.lieu|default_if_none:offer.state }}
+            Expired at : {{ object.expired_at|date:"d F Y" }} | Lieu: {{ offer.lieu|default_if_none:offer.state }}
         </div>
         <!-- begin post-image -->
-{#        <div class="post-image">#}
-{#            <img src="{% static 'assets/img/post1.jpg' %}" alt=""/>#}
-{#        </div>#}
+        {#        <div class="post-image">#}
+        {#            <img src="{% static 'assets/img/post1.jpg' %}" alt=""/>#}
+        {#        </div>#}
         <!-- end post-image -->
         <!-- begin post-desc -->
         <div class="post-desc">
@@ -33,6 +43,28 @@
                 {{ object.description }}
             </p>
         </div>
+        {% if object.created_by and user.is_employer %}
+            <div class="post-desc">
+                <p>
+                <form method="post" action="{% url 'submit_my_app' object.pk object.slug %}">
+                    {% csrf_token %}
+                    <button type="submit">Submit my application >></button>
+                </form>
+                </p>
+            </div>
+        {% elif object.created_by and user.is_job_seekers %}
+            <p>Candidate List</p>
+            <ul>
+                {% for cand in object.applyoffer_set.all %}
+                    <li>
+                        <table>
+                            <tr>{{ cand.user.get_full_name }}:</tr>
+                            <tr><a href="{{ cand.user.cv.url }}">  Download CV</a></tr>
+                        </table>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <!-- end post-desc -->
     </div>
     <!-- end post-detail -->

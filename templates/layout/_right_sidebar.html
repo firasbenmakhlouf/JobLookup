@@ -48,8 +48,7 @@
             <option {% if view.get_paginate_value == '100' %}selected="selected"{% endif %}>100</option>
         </select>
     </form>
-    <form method="get" role="form"
-          action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
+    <form method="get" role="form" action="">
         <label>Search By Name:</label>
         <div class="input-group sidebar-search">
             <input type="text" name="search" class="form-control" placeholder="Search Our Offers..."/>
@@ -99,8 +98,7 @@
 <!-- end section-container -->
 <!-- begin section-container -->
 {% if categories %}
-    <form class="section-container" method="get" role="form"
-          action="{% if archived %}{% url 'archived_post_list' %}{% else %}{% url 'recent_post_list' %}{% endif %}">
+    <form class="section-container" method="get" role="form" action="">
         <h4 class="section-title"><span>Categories</span></h4>
         <ul class="sidebar-list">
             {% for category in categories %}

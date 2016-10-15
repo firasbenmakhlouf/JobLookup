@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^display_cv/$', RecentCV.as_view(), name='recent_cv_list'),
     url(r'^display_offer/archived/$', ArchivedOffers.as_view(), name='archived_post_list'),
     url(r'^display_offer/(?P<pk>[\d]+)/(?P<slug>[-\w.]+)$', OfferDetails.as_view(), name='post_details'),
+    url(r'^submit_my_app/(?P<pk>[\d]+)/(?P<slug>[-\w.]+)/$', apply_offer, name='submit_my_app'),
 ]

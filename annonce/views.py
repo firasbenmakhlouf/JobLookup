@@ -5,6 +5,7 @@ from calendar import month_name
 
 from datetime import date, datetime
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -17,8 +18,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from localflavor.tn.tn_governorates import GOVERNORATE_CHOICES
-from annonce.forms import UserForm, UserUpdateForm, CVForm, PostForm, SearchForm
-from annonce.models import Offer, User
+from annonce.forms import UserForm, UserUpdateForm, CVForm, PostForm, SearchForm, ApplyOfferForm
+from annonce.models import Offer, User, ApplyOffer
 from metadata.models import TanitJobsCategory
 
 
@@ -275,6 +276,9 @@ class RecentCV(ListView):
             qs = qs.filter(Q(category__name=self.request.user.category.name))
         search = self.request.GET.get('search', '')
         category = self.request.GET.get('category', '')
+        region = self.request.GET.get('region', self.request.user.lieu)
+        if region:
+            qs = qs.filter(Q(lieu=region))
         if search:
             qs = qs.filter(Q(slug__icontains=search) | Q(category__name__icontains=search))
         if category:
@@ -387,3 +391,18 @@ class OfferDetails(DetailView):
             for obj in sorted(categories.iteritems(), key=operator.itemgetter(1), reverse=True)[:6]:
                 kwargs['categories'].append({'name': obj[0], 'count': obj[1]})
         return super(OfferDetails, self).get_context_data(**kwargs)
+
+
+@login_required
+def apply_offer(request, pk, slug):
+    if request.POST:
+        if request.user.cv:
+            obj = ApplyOfferForm(data={'offer': pk, 'user': request.user.id})
+            if obj.is_valid():
+                obj.save()
+                messages.success(request, "your application was successfully submitted")
+            else:
+                messages.error(request, 'you already submitted in this offer')
+        else:
+            messages.error(request, "Please add your CV")
+    return redirect(reverse('post_details', args=[pk, slug]))

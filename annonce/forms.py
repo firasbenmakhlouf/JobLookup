@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from localflavor.tn.tn_governorates import GOVERNORATE_CHOICES
-from annonce.models import User, Offer
+from annonce.models import User, Offer, ApplyOffer
 
 
 class UserForm(UserCreationForm):
@@ -43,6 +43,12 @@ class CVForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('cv',)
+
+
+class ApplyOfferForm(forms.ModelForm):
+    class Meta:
+        model = ApplyOffer
+        fields = '__all__'
 
 
 class PostForm(forms.ModelForm):
