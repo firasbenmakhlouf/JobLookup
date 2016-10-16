@@ -43,6 +43,18 @@
                 {{ object.description }}
             </p>
         </div>
+        <div style="float: left">
+            {% if  view.get_prev %}
+                <a href="{% url 'post_details' view.get_prev.pk view.get_prev.slug %}">Previous</a>
+            {% endif %}
+        </div>
+        <div style="float: right">
+            {% if  view.get_next %}
+                <a href="{% url 'post_details' view.get_next.pk view.get_next.slug %}">Next</a>
+            {% endif %}
+        </div>
+        <br><br>
+
         {% if object.created_by and user.is_employer %}
             <div class="post-desc">
                 <p>
@@ -59,7 +71,7 @@
                     <li>
                         <table>
                             <tr>{{ cand.user.get_full_name }}:</tr>
-                            <tr><a href="{{ cand.user.cv.url }}">  Download CV</a></tr>
+                            <tr><a href="{{ cand.user.cv.url }}"> Download CV</a></tr>
                         </table>
                     </li>
                 {% endfor %}

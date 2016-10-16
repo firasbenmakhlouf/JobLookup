@@ -18,8 +18,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from localflavor.tn.tn_governorates import GOVERNORATE_CHOICES
-from annonce.forms import UserForm, UserUpdateForm, CVForm, PostForm, SearchForm, ApplyOfferForm
-from annonce.models import Offer, User, ApplyOffer
+from annonce.forms import UserForm, UserUpdateForm, CVForm, PostForm, ApplyOfferForm
+from annonce.models import Offer, User
 from metadata.models import TanitJobsCategory
 
 
@@ -189,6 +189,27 @@ class PostListView(ListView):
         return qs
 
 
+def get_context_data(request, **kwargs):
+    filters = Q()
+    categories = {}
+    if request.user.category.name != 'Tous secteurs':
+        filters = Q(sector_activity__name=request.user.category.name)
+    qs = Offer.objects.filter(filters).order_by('-created_at')
+    slice = random.random() * (qs.count() - 10)
+    kwargs['recent_offers'] = qs[slice: slice + 6]
+    if request.user.category.name == 'Tous secteurs':
+        for category in TanitJobsCategory.objects.all():
+            qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by(
+                '-created_at')
+            count = qs.count()
+            if count:
+                categories[category.name] = count
+        kwargs['categories'] = []
+        for obj in sorted(categories.iteritems(), key=operator.itemgetter(1), reverse=True)[:6]:
+            kwargs['categories'].append({'name': obj[0], 'count': obj[1]})
+    return kwargs
+
+
 @method_decorator(login_required, name='dispatch')
 class RecentOffers(UserPassesTestMixin, ListView):
     model = Offer
@@ -228,24 +249,9 @@ class RecentOffers(UserPassesTestMixin, ListView):
         return qs.order_by('-created_at')
 
     def get_context_data(self, **kwargs):
-        filters = Q()
-        categories = {}
-        if self.request.user.category.name != 'Tous secteurs':
-            filters = Q(sector_activity__name=self.request.user.category.name)
-        qs = Offer.objects.filter(filters).order_by('-created_at')
-        slice = random.random() * (qs.count() - 10)
-        kwargs['recent_offers'] = qs[slice: slice + 6]
-        if self.request.user.category.name == 'Tous secteurs':
-            for category in TanitJobsCategory.objects.all():
-                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by(
-                    '-created_at')
-                count = qs.count()
-                if count:
-                    categories[category.name] = count
-            kwargs['categories'] = []
-            for obj in sorted(categories.iteritems(), key=operator.itemgetter(1), reverse=True)[:6]:
-                kwargs['categories'].append({'name': obj[0], 'count': obj[1]})
-        return super(RecentOffers, self).get_context_data(**kwargs)
+        context = super(RecentOffers, self).get_context_data(**kwargs)
+        context.update(get_context_data(self.request, **kwargs))
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -345,25 +351,10 @@ class ArchivedOffers(UserPassesTestMixin, ListView):
         return qs.order_by('-created_at')
 
     def get_context_data(self, **kwargs):
-        filters = Q()
-        categories = {}
-        if self.request.user.category.name != 'Tous secteurs':
-            filters = Q(sector_activity__name=self.request.user.category.name)
-        qs = Offer.objects.filter(filters).order_by('-created_at')
-        slice = random.random() * (qs.count() - 10)
-        kwargs['recent_offers'] = qs[slice: slice + 6]
-        kwargs['archived'] = True
-        if self.request.user.category.name == 'Tous secteurs':
-            for category in TanitJobsCategory.objects.all():
-                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category).order_by(
-                    '-created_at')
-                count = qs.count()
-                if count:
-                    categories[category.name] = count
-            kwargs['categories'] = []
-            for obj in sorted(categories.iteritems(), key=operator.itemgetter(1), reverse=True)[:6]:
-                kwargs['categories'].append({'name': obj[0], 'count': obj[1]})
-        return super(ArchivedOffers, self).get_context_data(**kwargs)
+        context = super(ArchivedOffers, self).get_context_data(**kwargs)
+        context.update(get_context_data(self.request, **kwargs))
+        context['archived'] = True
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -372,25 +363,22 @@ class OfferDetails(DetailView):
     template_name = 'post/details.html'
     slug_field = 'slug'
 
-    def get_context_data(self, **kwargs):
-        filters = Q()
-        categories = {}
-        if self.request.user.category.name != 'Tous secteurs':
-            filters = Q(sector_activity__name=self.request.user.category.name)
-        qs = Offer.objects.filter(filters)
-        slice = random.random() * (qs.count() - 10)
-        kwargs['recent_offers'] = qs[slice: slice + 6]
+    def get_next(self):
+        next = self.model.objects.filter(id__gt=self.get_object().pk).first()
+        if not next:
+            return False
+        return next
 
-        if self.request.user.category.name == 'Tous secteurs':
-            for category in TanitJobsCategory.objects.all():
-                qs = Offer.objects.values('sector_activity__name').filter(sector_activity=category)
-                count = qs.count()
-                if count:
-                    categories[category.name] = count
-            kwargs['categories'] = []
-            for obj in sorted(categories.iteritems(), key=operator.itemgetter(1), reverse=True)[:6]:
-                kwargs['categories'].append({'name': obj[0], 'count': obj[1]})
-        return super(OfferDetails, self).get_context_data(**kwargs)
+    def get_prev(self):
+        prev = self.model.objects.filter(id__lt=self.get_object().pk).order_by('-id').first()
+        if not prev:
+            return False
+        return prev
+
+    def get_context_data(self, **kwargs):
+        context = super(OfferDetails, self).get_context_data(**kwargs)
+        context.update(get_context_data(self.request, **kwargs))
+        return context
 
 
 @login_required
