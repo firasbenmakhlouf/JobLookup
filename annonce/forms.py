@@ -22,6 +22,11 @@ class UserForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+
+        self.fields['lieu'] = forms.ChoiceField(choices=(('', 'All Regions'),) + GOVERNORATE_CHOICES, required=False)
+
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'category', 'lieu')
