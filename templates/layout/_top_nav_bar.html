@@ -30,7 +30,7 @@
                     {% if user.is_employer %}
                         <li><a href="{% url 'archived_post_list' %}">ARCHIVED POSTS</a></li>
                     {% endif %}
-                    <li><a href="{% url 'profile' %}">PROFILE</a></li>
+                    <li><a href="{% url 'profile_details' %}">PROFILE</a></li>
                     <li><a href="{% url 'logout' %}">LOGOUT</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">LOGIN</a></li>
@@ -39,14 +39,14 @@
                                 class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{% url 'register' 'employer' %}"><i class="fa fa-upload"></i>
-                                    Find jobs | Submit your CV
+                                <a href="{% url 'register' 'job_seekers' %}"><i class="fa fa-upload"></i>
+                                    Job Seekers | Submit your CV
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'register' 'job_seekers' %}">
+                                <a href="{% url 'register' 'employer' %}">
                                     <i class="fa fa-file-pdf-o"></i>
-                                    Find Employers | Submit your Offer
+                                    Find Employees | Submit your Offer
                                 </a>
                             </li>
                         </ul>

@@ -128,10 +128,15 @@ def profile(request):
         if form.is_valid():
             form.save()
             if request.user.is_employer:
-                return redirect(reverse('recent_post_list'))
-            return redirect(reverse('recent_cv_list'))
+                return redirect(reverse('profile_details'))
+            return redirect(reverse('profile_details'))
     fields = (form[field] for field in UserUpdateForm.Meta.fields)
     return render(request, 'profile/edit.html', context={'form': fields})
+
+
+@login_required()
+def profile_details(request):
+    return render(request, 'profile/details.html')
 
 
 @login_required()
@@ -141,7 +146,7 @@ def add_cv(request):
         form = CVForm(request.POST, request.FILES, instance=request.user, initial={'user': request.user})
         if form.is_valid():
             form.save()
-            return redirect(reverse('add_cv'))
+            return redirect(reverse('profile_details'))
     return render(request, 'profile/add_cv.html', context={'form': form})
 
 
@@ -364,13 +369,20 @@ class OfferDetails(DetailView):
     slug_field = 'slug'
 
     def get_next(self):
-        next = self.model.objects.filter(id__gt=self.get_object().pk).first()
+        filters = {'id__gt': self.get_object().pk}
+        if self.request.user.is_job_seekers:
+            filters['created_by'] = self.request.user
+
+        next = self.model.objects.filter(**filters).first()
         if not next:
             return False
         return next
 
     def get_prev(self):
-        prev = self.model.objects.filter(id__lt=self.get_object().pk).order_by('-id').first()
+        filters = {'id__lt': self.get_object().pk}
+        if self.request.user.is_job_seekers:
+            filters['created_by'] = self.request.user
+        prev = self.model.objects.filter(**filters).order_by('-id').first()
         if not prev:
             return False
         return prev

@@ -7,6 +7,10 @@ from annonce.models import User, Offer, ApplyOffer
 class UserForm(UserCreationForm):
     position = forms.ChoiceField(choices=(('0', 'Employer'), ('1', 'Job Seekers')))
 
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['lieu'].required = True
+
     def save(self, commit=True):
         super(UserForm, self).save(commit)
         position = self.cleaned_data['position']

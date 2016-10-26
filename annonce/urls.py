@@ -4,7 +4,8 @@ from annonce.views import *
 urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^register/(?P<position>[-\w.]+)/$', register, name='register'),
-    url(r'^profile/$', profile, name='profile'),
+    url(r'^profile/$', profile_details, name='profile_details'),
+    url(r'^profile/edit/$', profile, name='profile'),
     url(r'^post/$', PostListView.as_view(), name='my_post_list'),
     url(r'^post/add/$', PostCreateView.as_view(), name='post_add'),
     url(r'^post/edit/(?P<pk>[\d]+)/$', PostUpdateView.as_view(), name='post_edit'),

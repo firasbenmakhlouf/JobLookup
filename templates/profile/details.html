@@ -1,0 +1,18 @@
+{% extends 'profile/_profile.html' %}
+{% load staticfiles i18n customfilters %}
+{% block contentprofile %}
+    <!-- begin col-8 -->
+    <div class="col-md-8 col-md-offset-2">
+        <div><span><strong>Email Address :</strong></span>{{ user.email }}</div>
+        <div><span><strong>First Name :</strong></span>{{ user.first_name }}</div>
+        <div><span><strong>Last Name :</strong></span>{{ user.last_name }}</div>
+        <div><span><strong>Category :</strong></span>{{ user.category }}</div>
+        <div><span><strong>Lieu :</strong></span>{{ user.lieu|default_if_none:'All Regions' }}</div>
+        {% if user.cv %}
+            <table>
+                <tr><a href="{{ user.cv.url }}"> Download CV</a></tr>
+            </table>
+        {% endif %}
+    </div>
+    <!-- end col-8 -->
+{% endblock %}
