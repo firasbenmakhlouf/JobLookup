@@ -77,8 +77,10 @@
             <div class="row row-space-30">
                 <div class="col-md-12">
                     <div id="posts_per_region" style="width: 900px; height: 500px;"></div>
-                    <div id="posts_per_sector_per_region" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_region_pie" style="width: 900px; height: 500px;"></div>
                     <div id="posts_per_sector" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_sector_pie" style="width: 900px; height: 500px;"></div>
+                    <div id="posts_per_sector_per_region" style="width: 900px; height: 500px;"></div>
                     <div id="posts_per_date" style="width: 900px; height: 500px;"></div>
                 </div>
             </div>
@@ -86,13 +88,15 @@
             <script type="text/javascript">
                 google.charts.load('current', {'packages': ['bar', 'corechart', 'line']});
                 google.charts.setOnLoadCallback(draw_posts_per_region);
+                google.charts.setOnLoadCallback(draw_posts_per_region_pie);
                 google.charts.setOnLoadCallback(posts_per_sector_per_region);
                 google.charts.setOnLoadCallback(draw_posts_per_date);
+                google.charts.setOnLoadCallback(draw_posts_per_sector);
                 google.charts.setOnLoadCallback(draw_posts_per_sector_pie);
                 function draw_posts_per_region() {
                     var data = new google.visualization.arrayToDataTable({{ posts_per_region|safe }});
                     var options = {
-                        width: 900,
+                        height: 500,
                         legend: {position: 'none'},
                         chart: {
                             title: 'Posts Per Region'
@@ -109,6 +113,20 @@
                     var chart = new google.charts.Bar(document.getElementById('posts_per_region'));
 
                     chart.draw(data, google.charts.Bar.convertOptions(options));
+                }
+
+                function draw_posts_per_region_pie() {
+
+                    var data = google.visualization.arrayToDataTable({{ posts_per_region|safe }});
+
+                    var options = {
+                        //title: 'Posts Per Region',
+                        is3D: true,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('posts_per_region_pie'));
+
+                    chart.draw(data, options);
                 }
 
                 function draw_posts_per_date() {
@@ -132,16 +150,38 @@
                     chart.draw(data, google.charts.Bar.convertOptions(options));
                 }
 
+                function draw_posts_per_sector() {
+                    var data = new google.visualization.arrayToDataTable({{ posts_per_sector|safe }});
+                    var options = {
+                        width: 900,
+                        legend: {position: 'none'},
+                        chart: {
+                            title: 'Posts Per Sector'
+                        },
+                        vAxis: {
+                            format: 'decimal'
+                        },
+                        series: {
+                            0: {axis: 'distance'}, // Bind series 0 to an axis named 'distance'.
+                            1: {axis: 'brightness'} // Bind series 1 to an axis named 'brightness'.
+                        }
+                    };
+
+                    var chart = new google.charts.Bar(document.getElementById('posts_per_sector'));
+
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                }
+
                 function draw_posts_per_sector_pie() {
 
                     var data = google.visualization.arrayToDataTable({{ posts_per_sector|safe }});
 
                     var options = {
-                        title: 'Posts Per Sector',
+                        //title: 'Posts Per Sector',
                         is3D: true,
                     };
 
-                    var chart = new google.visualization.PieChart(document.getElementById('posts_per_sector'));
+                    var chart = new google.visualization.PieChart(document.getElementById('posts_per_sector_pie'));
 
                     chart.draw(data, options);
                 }
