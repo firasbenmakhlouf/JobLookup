@@ -43,14 +43,14 @@
                 {{ object.description }}
             </p>
         </div>
-        <div style="float: left">
+        <div style="float: right">
             {% if  view.get_prev %}
-                <a href="{% url 'post_details' view.get_prev.pk view.get_prev.slug %}">Previous</a>
+                <a href="{% url 'post_details' view.get_prev.pk view.get_prev.slug %}"><b>Next</b></a>
             {% endif %}
         </div>
-        <div style="float: right">
+        <div style="float: left">
             {% if  view.get_next %}
-                <a href="{% url 'post_details' view.get_next.pk view.get_next.slug %}">Next</a>
+                <a href="{% url 'post_details' view.get_next.pk view.get_next.slug %}"><b>Previous</b></a>
             {% endif %}
         </div>
         <br><br>
