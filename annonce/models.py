@@ -71,10 +71,10 @@ class User(AbstractBaseUser, PermissionsMixin):
                                     help_text=_('Designates whether the user is active or no.'))
     date_joined = models.DateTimeField(_('Date Joined'), default=timezone.now)
     category = models.ForeignKey(TanitJobsCategory, null=True)
-    is_employer = models.BooleanField(_('is_employer'), default=False,
-                                      help_text=_('Designates whether the user is a is employer or not'))
-    is_job_seekers = models.BooleanField(_('is_employer'), default=False,
-                                         help_text=_('Designates whether the user is a is employer or not'))
+    is_employer = models.BooleanField(_('is Job Seekers'), default=False,
+                                      help_text=_('Designates whether the user is a job seekers or not'))
+    is_job_seekers = models.BooleanField(_('Is employer'), default=False,
+                                         help_text=_('Designates whether the user is a employer or not'))
     lieu = models.CharField(max_length=255, blank=True, null=True, choices=GOVERNORATE_CHOICES)
     cv = models.FileField(null=True, blank=True)
 
