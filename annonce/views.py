@@ -40,7 +40,7 @@ def index(request):
     # Per Sector -------------------------
     qs_posts_per_sector = Offer.objects.values('sector_activity__name').annotate(
         count=Count('sector_activity')).order_by('count')
-    posts_per_sector = [['Region', 'Count']]
+    posts_per_sector = [['Sector', 'Count']]
     sum_qs_posts_per_sector = sum([obj['count'] for obj in qs_posts_per_sector])
     # other_count = 0
     for obj in qs_posts_per_sector:
