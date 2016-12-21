@@ -99,9 +99,9 @@ def register(request, position):
     if request.user.is_authenticated():
         return redirect(reverse('recent_post_list'))
     if position == 'employer':
-        initial = {'position': '0'}
-    else:
         initial = {'position': '1'}
+    else:
+        initial = {'position': '0'}
     form = UserForm(initial=initial)
     if request.POST:
         data = request.POST.copy()
